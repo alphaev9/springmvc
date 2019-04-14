@@ -1,0 +1,8 @@
+starter module focuses on the following point:
+1 the skeleton of web application based on spring mvc framework,
+here you can see some frequently used components which includes dispatcher servlet,controller and so on,
+respectively,these two components acts as boss and worker.
+please compare with origin servlet mechanism and think about what is advantage because of adopting this design
+2 basic configuration when using spring mvc framework
+3 how to activate the logging function
+

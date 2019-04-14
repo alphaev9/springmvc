@@ -1,0 +1,9 @@
+core tasks list:
+1 given a http request arrived at dispatcher servlet,which controller should process this request must be resolved
+2 when entering the field of a controller method,request parameters in request and method parameters must be bind and resolve
+3 before domain logic execution,validating the request parameters is good idea,but,it's an option depending on your decision
+4 in general,domain logic may produce some result,where these result should be placed and how to treat various result type?
+5 in the spring mvc framework,view is the abstraction of thing returned back to client,such as a jsp etc.
+besides core task mentioned above,this module also covered:
+1 using java code to replace the function of web.xml
+2
