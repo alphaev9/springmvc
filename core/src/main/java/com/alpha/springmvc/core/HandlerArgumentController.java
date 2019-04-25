@@ -4,6 +4,7 @@ import com.alpha.springmvc.domain.Address;
 import com.alpha.springmvc.domain.Backlog;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,10 +78,11 @@ public class HandlerArgumentController {
     /**
      * matrix-variable:shapes like /get/backlog;id=1;title=test
      * you can use matrix variable to carry request information
+     * puzzle: why @MatrixVariable must bind to a PathVariable?
      */
-    @GetMapping("matrix/backlog")
-    public void getMatrixVariable(@MatrixVariable String id, @MatrixVariable("title") String backlog) {
-        log.info("id: " + id + "  title: " + backlog);
+    @GetMapping("matrix/backlog/{id}")
+    public void getMatrixVariable(@PathVariable String id, @MatrixVariable String description, @MatrixVariable("title") String backlog) {
+        log.info("id: " + id + "  title: " + backlog + "   description: " + description);
     }
 
     @PostMapping("attachment")
@@ -118,6 +120,22 @@ public class HandlerArgumentController {
     @PostMapping(value = "addBacklogWithCooperators")
     public void addBacklogWithCooperators(Backlog backlog) {
         log.info(backlog.getCooperators().get(0).getName() + " " + backlog.getCooperators().get(0).getEmail());
+    }
+
+    @PostMapping(value = "requestBody", consumes = "application/json")
+    public void getRequestBody(@RequestBody Address address) {
+        log.info(address.getStreet() + "  " + address.getNumber());
+    }
+
+    @PostMapping(value = "httpEntity", consumes = "application/json")
+    public void getRequestBody(HttpEntity<Address> httpEntity) {
+        Address address = httpEntity.getBody();
+        log.info(address.getStreet() + "  " + address.getNumber());
+    }
+
+    @PostMapping(value = "messageConverter", consumes = "application/my-format")
+    public void customMessageConverter(@RequestBody Address address) {
+        log.info(address.getStreet() + "  " + address.getNumber());
     }
 
 }

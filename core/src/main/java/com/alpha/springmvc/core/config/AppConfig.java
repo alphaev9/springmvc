@@ -1,6 +1,7 @@
-package com.alpha.springmvc.core;
+package com.alpha.springmvc.core.config;
 
 import com.alpha.springmvc.core.conversion.AddressConverter;
+import com.alpha.springmvc.core.messageConvert.CustomMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -8,13 +9,15 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.validation.MessageCodesResolver;
 import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.view.InternalResourceView;
 
 import java.util.List;
 
@@ -30,7 +33,10 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> list) {
-
+        GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
+        list.add(converter);
+        CustomMessageConverter<Object> customMessageConverter = new CustomMessageConverter<>();
+        list.add(customMessageConverter);
     }
 
     @Override
@@ -90,7 +96,9 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry viewResolverRegistry) {
-        viewResolverRegistry.jsp("/", ".jsp");
+        viewResolverRegistry.jsp("/WEB-INF/", ".jsp");
+        viewResolverRegistry.beanName();
+
     }
 
     @Override
@@ -115,5 +123,11 @@ public class AppConfig implements WebMvcConfigurer {
         placeholderConfigurer.setLocation(resource);
         return placeholderConfigurer;
     }
+
+    @Bean("returnValue/model")
+    public View BeanNameView() {
+        return new InternalResourceView("/beanName.jsp");
+    }
+
 
 }

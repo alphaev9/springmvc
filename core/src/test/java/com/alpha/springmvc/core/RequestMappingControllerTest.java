@@ -1,5 +1,6 @@
 package com.alpha.springmvc.core;
 
+import com.alpha.springmvc.core.config.AppConfig;
 import com.alpha.springmvc.domain.Backlog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

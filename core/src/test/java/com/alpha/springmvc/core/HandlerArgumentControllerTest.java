@@ -1,7 +1,10 @@
 package com.alpha.springmvc.core;
 
+import com.alpha.springmvc.domain.Address;
+import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.servlet.http.Cookie;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(locations = "classpath:argument-config.xml")
@@ -75,7 +79,7 @@ class HandlerArgumentControllerTest {
 
     @Test
     void getMatrixVariable() throws Exception {
-        mockMvc.perform(get("/argument/matrix/backlog;id=1"))
+        mockMvc.perform(get("/argument/matrix/backlog/1;title=test;description=it's test"))
                 .andExpect(status().isOk());
     }
 
@@ -88,11 +92,9 @@ class HandlerArgumentControllerTest {
     }
 
 
-
-
     @Test
     void addAddress() throws Exception {
-        mockMvc.perform(post("/backlog/addAddress")
+        mockMvc.perform(post("/argument/addAddress")
                 .param("street", "BaoGuang")
                 .param("number", "44"))
                 .andExpect(status().isOk());
@@ -100,7 +102,7 @@ class HandlerArgumentControllerTest {
 
     @Test
     void addBacklogWithAddress() throws Exception {
-        mockMvc.perform(post("/backlog/addBacklogWithAddress")
+        mockMvc.perform(post("/argument/addBacklogWithAddress")
                 .param("title", "test_backlog")
                 .param("address.street", "BaoGuang")
                 .param("address.number", "44"))
@@ -109,7 +111,7 @@ class HandlerArgumentControllerTest {
 
     @Test
     void addBacklogWithCooperators() throws Exception {
-        mockMvc.perform(post("/backlog/addBacklogWithCooperators")
+        mockMvc.perform(post("/argument/addBacklogWithCooperators")
                 .param("cooperators[0].name", "alpha")
                 .param("cooperators[0].email", "alpha@sohu.com")
                 .param("cooperators[1].name", "lisa")
@@ -118,4 +120,47 @@ class HandlerArgumentControllerTest {
     }
 
 
+    @Test
+    void getRequestBody() throws Exception {
+        Address address = new Address();
+        address.setStreet("baoguang");
+        address.setNumber(44);
+        Gson gson = new Gson();
+        String body = gson.toJson(address);
+        mockMvc.perform(post("/argument/requestBody")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("getRequestBody"));
+    }
+
+    @Test
+    void getRequestBodyByHttpEntity() throws Exception {
+        Address address = new Address();
+        address.setStreet("baoguang");
+        address.setNumber(44);
+        Gson gson = new Gson();
+        String body = gson.toJson(address);
+        mockMvc.perform(post("/argument/httpEntity")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("getRequestBody"));
+    }
+
+    @Test
+    void customMessageConverter() throws Exception {
+        Address address = new Address();
+        address.setStreet("baoguang");
+        address.setNumber(44);
+        Gson gson = new Gson();
+        String body = gson.toJson(address);
+        System.out.println(body);
+        MediaType mediaType = new MediaType("application", "my-format");
+        mockMvc.perform(post("/argument/messageConverter")
+                .contentType(mediaType)
+                .content(body))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("customMessageConverter"));
+    }
 }
