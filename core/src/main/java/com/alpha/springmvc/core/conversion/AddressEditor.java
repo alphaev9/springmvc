@@ -9,6 +9,7 @@ import java.beans.PropertyEditorSupport;
 
 public class AddressEditor extends PropertyEditorSupport {
     private static final Logger log = LogManager.getLogger(TypeConversionController.class);
+
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
         log.info("AddressEditor is working....");
@@ -17,5 +18,11 @@ public class AddressEditor extends PropertyEditorSupport {
         address.setStreet(values[0]);
         address.setNumber(Integer.valueOf(values[1]));
         setValue(address);
+    }
+
+    @Override
+    public String getAsText() {
+        Address address = (Address) getValue();
+        return address.getStreet() + " : " + address.getNumber();
     }
 }

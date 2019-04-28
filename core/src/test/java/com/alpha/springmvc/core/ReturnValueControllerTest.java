@@ -1,7 +1,6 @@
 package com.alpha.springmvc.core;
 
 import com.alpha.springmvc.core.config.AppConfig;
-import com.alpha.springmvc.core.config.AppConfigBasedAdapter;
 import com.alpha.springmvc.domain.Backlog;
 import com.alpha.springmvc.domain.BacklogState;
 import com.google.gson.Gson;
@@ -12,8 +11,6 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import java.util.Date;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -110,6 +107,28 @@ class ReturnValueControllerTest {
         mockMvc.perform(get("/returnValue/objectInResponse")
                 .accept(mediaType))
                 .andExpect(status().isFound())
+                .andExpect(content().json(gson.toJson(backlog)))
+                .andDo(print());
+    }
+
+    @Test
+    void returnResponseEntity() throws Exception {
+        Backlog backlog = new Backlog();
+        backlog.setTitle("test");
+        backlog.setDescription("it's backlog for test");
+        backlog.setState(BacklogState.fresh);
+        Gson gson = new Gson();
+
+        mockMvc.perform(get("/returnValue/responseEntity"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(gson.toJson(backlog)))
+                .andDo(print());
+
+        MediaType mediaType = new MediaType("application", "my-format");
+
+        mockMvc.perform(get("/returnValue/responseEntity")
+                .accept(mediaType))
+                .andExpect(status().isOk())
                 .andExpect(content().json(gson.toJson(backlog)))
                 .andDo(print());
     }

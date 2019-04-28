@@ -6,6 +6,7 @@ import com.alpha.springmvc.domain.BacklogState;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 @Controller
 @RequestMapping("returnValue")
@@ -113,6 +113,16 @@ public class ReturnValueController {
         backlog.setDescription("it's backlog for test");
         backlog.setState(BacklogState.fresh);
         return backlog;
+    }
+
+    @GetMapping("responseEntity")
+    @ResponseBody
+    public ResponseEntity<Backlog> returnResponseEntity() {
+        Backlog backlog = new Backlog();
+        backlog.setTitle("test");
+        backlog.setDescription("it's backlog for test");
+        backlog.setState(BacklogState.fresh);
+        return new ResponseEntity<>(backlog, HttpStatus.OK);
     }
 
 
